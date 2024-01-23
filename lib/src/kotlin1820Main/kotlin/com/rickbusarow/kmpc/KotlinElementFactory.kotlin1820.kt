@@ -28,6 +28,7 @@ import org.jetbrains.kotlin.descriptors.impl.ModuleDescriptorImpl
 import org.jetbrains.kotlin.incremental.isJavaFile
 import org.jetbrains.kotlin.incremental.isKotlinFile
 import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.resolve.lazy.declarations.FileBasedDeclarationProviderFactory
 import org.jetbrains.kotlin.utils.PathUtil
 import java.io.File
 
