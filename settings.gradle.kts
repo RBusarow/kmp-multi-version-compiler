@@ -3,16 +3,27 @@ pluginManagement {
     mavenCentral()
     gradlePluginPortal()
   }
+  includeBuild("../mahout")
 }
 
 plugins {
-  id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
+  id("com.gradle.enterprise") version "3.16.2"
 }
 
 dependencyResolutionManagement {
-
+  @Suppress("UnstableApiUsage")
   repositories {
     mavenCentral()
+    gradlePluginPortal()
+    google()
+  }
+}
+
+gradleEnterprise {
+  buildScan {
+    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+    termsOfServiceAgree = "yes"
+    publishAlways()
   }
 }
 
