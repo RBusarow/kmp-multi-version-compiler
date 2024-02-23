@@ -16,31 +16,37 @@ mahout {
       dependencies {
         implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.8.10")
       }
-      capabilities.add("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.8.10")
+      capabilities {
+        add("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.8.10")
+      }
     }
     variant("kotlin1820") {
       dependencies {
         implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.8.20")
       }
-      capabilities.add("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.8.20")
+      capabilities {
+        add("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.8.20")
+      }
     }
     variant("kotlin190") {
       dependencies {
         implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.0")
       }
-      capabilities.add("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.0")
+      capabilities {
+        add("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.0")
+      }
     }
     variant("kotlin1910") {
       dependencies {
         implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.10")
       }
-      capabilities.add("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.10")
+      capabilities { add("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.10") }
     }
     variant("kotlin1922") {
       dependencies {
         implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.22")
       }
-      capabilities.add("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.22")
+      capabilities { add("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.22") }
     }
   }
 }
