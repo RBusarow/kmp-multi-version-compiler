@@ -1,6 +1,8 @@
+import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
+
 plugins {
   kotlin("multiplatform")
-  // id("com.dropbox.dependency-guard")
+  id("com.dropbox.dependency-guard")
 }
 
 group = "com.rickbusarow.kmpc"
@@ -19,106 +21,62 @@ kotlin {
   // jvm("kotlin1910") { attributes.attribute(compilerVersionAttribute, name) }
   // jvm("kotlin1920") { attributes.attribute(compilerVersionAttribute, name) }
 
-  jvm("commonJvm") {
+  jvm {
+
+    val target: KotlinJvmTarget = this@jvm
 
     // withJava()
 
-    // val compat1 by compilations.registering
-    // val compat2 by compilations.registering
+    val mainCompilation = target.compilations.getByName("main")
 
-    println("################################################")
-    println(compilations.names)
-    println("################################################")
+    val mainKotlinSourceSet = mainCompilation.defaultSourceSet
+
+    // val shared by kotlin.sourceSets.creating { /* kotlin.srcDirs("src/shared/kotlin") */ }
+
+    val compat1822 by compilations.creating { /*defaultSourceSet.dependsOn(shared)*/ }
+    val compat1900 by compilations.creating { /*defaultSourceSet.dependsOn(shared)*/ }
+    val compat1910 by compilations.creating { /*defaultSourceSet.dependsOn(shared)*/ }
+    val compat1920 by compilations.creating { /*defaultSourceSet.dependsOn(shared)*/ }
+    val compat1923 by compilations.creating { /*defaultSourceSet.dependsOn(shared)*/ }
+
+    println(
+      """
+      |################################################
+      | -- compilations
+      |${compilations.namesLines()}
+      |
+      | -- kotlin sourceSets
+      |${kotlin.sourceSets.joinToString("\n") { it.name + " -- ${it.dependsOn.map { it.name }}" }}
+      |
+      | -- java sourceSets
+      |${java.sourceSets.namesLines()}
+      |################################################
+      """.trimMargin()
+    )
+
+    compilations.forEach {
+      it.defaultSourceSet
+        .kotlin
+        .srcDirs
+        .forEach { it.resolve("com/rickbusarow/kmpc").mkdirs() }
+    }
   }
+
+  println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% targets: ${kotlin.targets.names}")
 
   sourceSets {
     val commonMain by getting
-    val commonTest by getting {
-      dependencies {
-        implementation(kotlin("test"))
-      }
-    }
-
-    val commonJvm by creating {
-      dependsOn(commonMain)
-    }
-
-    // val commonJvmCompat1 by getting { dependsOn(commonJvm) }
-    // val commonJvmCompat2 by getting { dependsOn(commonJvm) }
-
-    // java {
-    //
-    // val boogers by java.sourceSets.registering {
-    //   java.srcDir("src/boogers/kotlin")
-    // }
-    //
-    // registerFeature("boogers") rf@{
-    //   val feature: FeatureSpec = this@rf
-    //
-    //   println("############################### java source sets")
-    //   println(sourceSets.names)
-    //   println("###############################")
-    //
-    //   feature.usingSourceSet(boogers.get())
-    // }
-    // }
-
-    // val kotlin1810Main by getting {
-    //   dependencies {
-    //     api("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.8.10")
-    //   }
-    // }
-    // val kotlin1810Test by getting
-    // val kotlin1820Main by getting {
-    //   dependencies {
-    //     api("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.8.20")
-    //   }
-    // }
-    // val kotlin1820Test by getting
-    // val kotlin190Main by getting {
-    //   dependencies {
-    //     api("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.0")
-    //   }
-    // }
-    // val kotlin190Test by getting
-    // val kotlin1910Main by getting {
-    //   dependencies {
-    //     api("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.10")
-    //   }
-    // }
-    // val kotlin1910Test by getting
-    // val kotlin1920Main by getting {
-    //   dependencies {
-    //     api("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.20")
-    //   }
-    // }
-    // val kotlin1920Test by getting
   }
 }
 
-// dependencyGuard {
-//   listOf(
-//     "kotlin1810CompileClasspath",
-//     "kotlin1810RuntimeClasspath",
-//     "kotlin1810TestCompileClasspath",
-//     "kotlin1810TestRuntimeClasspath",
-//     "kotlin1820CompileClasspath",
-//     "kotlin1820RuntimeClasspath",
-//     "kotlin1820TestCompileClasspath",
-//     "kotlin1820TestRuntimeClasspath",
-//     "kotlin190CompileClasspath",
-//     "kotlin190RuntimeClasspath",
-//     "kotlin190TestCompileClasspath",
-//     "kotlin190TestRuntimeClasspath",
-//     "kotlin1910CompileClasspath",
-//     "kotlin1910RuntimeClasspath",
-//     "kotlin1910TestCompileClasspath",
-//     "kotlin1910TestRuntimeClasspath",
-//     "kotlin1920CompileClasspath",
-//     "kotlin1920RuntimeClasspath",
-//     "kotlin1920TestCompileClasspath",
-//     "kotlin1920TestRuntimeClasspath"
-//   ).forEach { cfg ->
-//     configuration(cfg)
-//   }
-// }
+dependencyGuard {
+  configurations.names
+    .filter { name ->
+      name.endsWith("CompileClasspath") ||
+        name.endsWith("RuntimeClasspath")
+    }.forEach { cfg ->
+      configuration(cfg)
+    }
+}
+
+fun NamedDomainObjectCollection<*>.namesLines() = names.joinToString("\n")
